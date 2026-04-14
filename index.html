@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>West Essex Wednesday and Saturday 9:00am Rollup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f4f6f3;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .app { max-width: 900px; margin: 0 auto; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a5c2a 0%, #2d7a3e 40%, #1a4a1e 100%);
+    border-radius: 12px;
+    padding: 20px 24px 16px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 30px,
+      transparent 30px, transparent 60px
+    );
+  }
+  .hero-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  .hero-flag { text-align: center; font-size: 28px; margin-bottom: 6px; position: relative; }
+  .hero-subtitle {
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    text-align: center;
+    position: relative;
+    margin-top: 4px;
+  }
+
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #e8ede8;
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn.active { background: #1a5c2a; color: #fff; border-color: #1a5c2a; }
+  .tab-btn:hover:not(.active) { background: #fff; color: #1a1a1a; }
+
+  .variation-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .wed-badge { background: rgba(245,158,11,0.15); color: #b45309; border: 1px solid rgba(245,158,11,0.3); }
+  .sat-badge { background: rgba(124,58,237,0.12); color: #6d28d9; border: 1px solid rgba(124,58,237,0.3); }
+
+  .section-card {
+    background: #fff;
+    border: 1px solid #e0e4df;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .count-badge {
+    font-size: 12px;
+    background: #e8f5e9;
+    color: #1a5c2a;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 90px 32px;
+    gap: 6px;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0e4df;
+  }
+  .col-hdr {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 90px 32px;
+    gap: 6px;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .name-row:last-child { border-bottom: none; }
+  .name-row input[type="text"] {
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    color: #1a1a1a;
+    width: 100%;
+  }
+  .name-row input[type="text"]:focus {
+    outline: none;
+    border-color: #1a5c2a;
+    background: #fff;
+  }
+  .name-row select {
+    padding: 6px 8px;
+    font-size: 13px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    color: #1a1a1a;
+    cursor: pointer;
+    width: 100%;
+  }
+  .name-row select:focus { outline: none; border-color: #1a5c2a; }
+  .del-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: transparent;
+    color: #888;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .del-btn:hover { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+
+  .action-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-add {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #1a5c2a;
+    background: transparent;
+    color: #1a5c2a;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-add:hover { background: #e8f5e9; }
+  .btn-clear {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: transparent;
+    color: #666;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-clear:hover { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+  .btn-generate {
+    margin-left: auto;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #1a5c2a;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-generate:hover { background: #144a21; }
+  .btn-generate:disabled { background: #ccc; color: #888; cursor: default; }
+
+  .info-note {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 8px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: #bbb;
+    font-size: 14px;
+  }
+  .empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+  .groups-section { margin-top: 4px; }
+  .groups-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .groups-title { font-size: 15px; font-weight: 500; color: #1a1a1a; }
+  .btn-share-all {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid #25D366;
+    background: transparent;
+    color: #128C7E;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    text-decoration: none;
+  }
+  .btn-share-all:hover { background: #e8f5e9; }
+
+  .group-card {
+    background: #f7f9f7;
+    border: 1px solid #e0e4df;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .group-card.first-group { border-left: 3px solid #f59e0b; }
+  .group-card.last-group { border-left: 3px solid #7c3aed; }
+  .group-card.regular-group { border-left: 3px solid #1a5c2a; }
+  .group-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .group-label { font-size: 13px; font-weight: 500; color: #555; }
+  .group-size-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .badge-3 { background: #e8f5e9; color: #1a5c2a; }
+  .badge-4 { background: #e3f2fd; color: #1565c0; }
+  .group-names { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .name-chip {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: #1a1a1a;
+  }
+  .btn-wa {
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #25D366;
+    background: transparent;
+    color: #128C7E;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-wa:hover { background: #e8f5e9; }
+
+  @media (max-width: 600px) {
+    .col-headers { grid-template-columns: 1fr 1fr 32px; }
+    .col-hdr.grp-hdr { display: none; }
+    .name-row { grid-template-columns: 1fr 1fr 32px; }
+    .name-row .group-select { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="hero-flag">⛳</div>
+    <div class="hero-title">West Essex Wednesday and Saturday 9:00am Rollup</div>
+    <div class="hero-subtitle">Group generator &amp; manager</div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchVariation('wed')" id="tab-wed">Wednesday Roll Up</button>
+    <button class="tab-btn" onclick="switchVariation('sat')" id="tab-sat">Saturday Roll Up</button>
+  </div>
+
+  <div id="variation-indicator" style="margin-bottom:10px;">
+    <span class="variation-badge wed-badge" id="var-badge">Wednesday Roll Up</span>
+  </div>
+
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title">Players</span>
+      <span class="count-badge" id="count-badge">0 / 20</span>
+    </div>
+    <div class="col-headers">
+      <span class="col-hdr">Name</span>
+      <span class="col-hdr">Designated partner</span>
+      <span class="col-hdr grp-hdr">Group pref</span>
+      <span class="col-hdr"></span>
+    </div>
+    <div id="names-list"></div>
+    <div class="action-row">
+      <button class="btn-add" onclick="addRow()"><span style="font-size:16px;">+</span> Add player</button>
+      <button class="btn-clear" onclick="clearAll()">Clear all</button>
+      <button class="btn-generate" onclick="generateGroups()" id="gen-btn" disabled>⛳ Generate groups</button>
+    </div>
+    <div class="info-note">Groups of 3 shown first. Partners stay together. First/Last group preferences honoured.</div>
+  </div>
+
+  <div id="groups-output"></div>
+</div>
+
+<script>
+  const state = { wed: [], sat: [], current: 'wed' };
+  function cur() { return state[state.current]; }
+
+  function addRow(name='', partner='', group='') {
+    if (cur().length >= 20) return;
+    cur().push({ name, partner, group });
+    render();
+  }
+
+  function deleteRow(i) { cur().splice(i, 1); render(); }
+  function updateField(i, field, val) { cur()[i][field] = val; }
+
+  function clearAll() {
+    if (!confirm('Clear all names for this variation?')) return;
+    state[state.current] = [];
+    document.getElementById('groups-output').innerHTML = '';
+    render();
+  }
+
+  function switchVariation(v) {
+    state.current = v;
+    document.getElementById('tab-wed').classList.toggle('active', v === 'wed');
+    document.getElementById('tab-sat').classList.toggle('active', v === 'sat');
+    const badge = document.getElementById('var-badge');
+    if (v === 'wed') {
+      badge.textContent = 'Wednesday Roll Up';
+      badge.className = 'variation-badge wed-badge';
+    } else {
+      badge.textContent = 'Saturday Roll Up';
+      badge.className = 'variation-badge sat-badge';
+    }
+    document.getElementById('groups-output').innerHTML = '';
+    render();
+  }
+
+  function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  }
+
+  function render() {
+    const list = cur();
+    const container = document.getElementById('names-list');
+    document.getElementById('count-badge').textContent = list.length + ' / 20';
+    document.getElementById('gen-btn').disabled = list.length < 2;
+    container.innerHTML = list.length === 0
+      ? '<div class="empty-state"><div class="empty-icon">👤</div><div>No players yet — add some above</div></div>'
+      : list.map((p, i) => `
+        <div class="name-row">
+          <input type="text" placeholder="Player name" value="${esc(p.name)}" oninput="updateField(${i},'name',this.value)" />
+          <input type="text" placeholder="Partner (optional)" value="${esc(p.partner)}" oninput="updateField(${i},'partner',this.value)" />
+          <select class="group-select" onchange="updateField(${i},'group',this.value)">
+            <option value="" ${!p.group?'selected':''}>—</option>
+            <option value="First" ${p.group==='First'?'selected':''}>First</option>
+            <option value="Last" ${p.group==='Last'?'selected':''}>Last</option>
+          </select>
+          <button class="del-btn" onclick="deleteRow(${i})" title="Remove">×</button>
+        </div>`).join('');
+  }
+
+  function generateGroups() {
+    const players = cur().map(p => ({...p})).filter(p => p.name.trim());
+    if (players.length < 2) { alert('Add at least 2 players to generate groups.'); return; }
+    const n = players.length;
+    const numGroups = Math.ceil(n / 3.5);
+    const numOf3 = numGroups * 4 - n;
+    const numOf4 = numGroups - numOf3;
+    const sizes = Array(numOf3).fill(3).concat(Array(numOf4).fill(4));
+    const groups = sizes.map(() => []);
+    const shuffle = arr => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+    const firstPlayers = players.filter(p => p.group === 'First');
+    const lastPlayers = players.filter(p => p.group === 'Last');
+    const others = shuffle(players.filter(p => p.group !== 'First' && p.group !== 'Last'));
+    const placedNames = new Set();
+    const firstGroupIdx = 0;
+    const lastGroupIdx = groups.length - 1;
+
+    const placeInGroup = (player, gIdx) => {
+      if (!placedNames.has(player.name)) {
+        groups[gIdx].push(player.name);
+        placedNames.add(player.name);
+        if (player.partner && player.partner.trim()) {
+          const partnerObj = players.find(p => p.name.toLowerCase() === player.partner.trim().toLowerCase());
+          if (partnerObj && !placedNames.has(partnerObj.name)) {
+            groups[gIdx].push(partnerObj.name);
+            placedNames.add(partnerObj.name);
+          }
+        }
+      }
+    };
+
+    firstPlayers.forEach(p => placeInGroup(p, firstGroupIdx));
+    lastPlayers.forEach(p => placeInGroup(p, lastGroupIdx));
+
+    let gIdx = 0;
+    for (const p of others) {
+      if (placedNames.has(p.name)) continue;
+      while (gIdx < groups.length && groups[gIdx].length >= sizes[gIdx]) gIdx++;
+      if (gIdx >= groups.length) gIdx = groups.length - 1;
+      placeInGroup(p, gIdx);
+      if (groups[gIdx].length >= sizes[gIdx]) gIdx++;
+    }
+    players.forEach(p => {
+      if (!placedNames.has(p.name)) {
+        let smallest = 0;
+        for (let i = 1; i < groups.length; i++) {
+          if (groups[i].length < groups[smallest].length) smallest = i;
+        }
+        groups[smallest].push(p.name);
+        placedNames.add(p.name);
+      }
+    });
+    displayGroups(groups, sizes);
+  }
+
+  function displayGroups(groups, sizes) {
+    const variation = state.current === 'wed' ? 'Wednesday Roll Up' : 'Saturday Roll Up';
+    const lastIdx = groups.length - 1;
+    const waIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="#128C7E" style="vertical-align:middle;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+    const allText = groups.map((g, i) => `Group ${i+1}: ${g.join(', ')}`).join('%0A');
+    const shareAllUrl = `https://wa.me/?text=${encodeURIComponent(variation + '\n')}${allText}`;
+
+    let html = `<div class="section-card groups-section">
+      <div class="groups-header">
+        <span class="groups-title">${variation} — Groups</span>
+        <a class="btn-share-all" href="${shareAllUrl}" target="_blank">${waIcon} Share all</a>
+      </div>`;
+
+    groups.forEach((grp, i) => {
+      let labelClass = 'regular-group';
+      let labelText = `Group ${i + 1}`;
+      if (i === 0 && groups.length > 1) { labelClass = 'first-group'; labelText = `Group 1 — First tee`; }
+      if (i === lastIdx && groups.length > 1) { labelClass = 'last-group'; labelText = `Group ${i+1} — Last tee`; }
+      const sizeClass = grp.length === 3 ? 'badge-3' : 'badge-4';
+      const chips = grp.map(n => `<span class="name-chip">${n}</span>`).join('');
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(variation + ' - Group ' + (i+1) + ': ' + grp.join(', '))}`;
+      html += `<div class="group-card ${labelClass}">
+        <div class="group-card-header">
+          <span class="group-label">${labelText}</span>
+          <span class="group-size-badge ${sizeClass}">${grp.length} players</span>
+        </div>
+        <div class="group-names">${chips}</div>
+        <a class="btn-wa" href="${waUrl}" target="_blank">${waIcon} Share on WhatsApp</a>
+      </div>`;
+    });
+    html += `</div>`;
+    document.getElementById('groups-output').innerHTML = html;
+  }
+
+  render();
+</script>
+</body>
+</html>

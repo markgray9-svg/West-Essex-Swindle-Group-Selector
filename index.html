@@ -1,280 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>West Essex Wednesday and Saturday 9:00am Rollup</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1a5c2a;--green-l:#e8f5e9;--green-d:#144a21;
+  --amber:#b45309;--amber-l:#fef3c7;
+  --purple:#6d28d9;--purple-l:#ede9fe;
+  --wa:#128C7E;--wa-l:#e8f5e9;--wa-b:#25D366;
+}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f0;color:#1a1a1a;min-height:100vh}
-.app{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.inner{min-width:360px;max-width:860px;margin:0 auto;padding:14px 14px 28px}
-.hero{background:#1a5c2a;border-radius:12px;padding:18px 20px 14px;margin-bottom:14px;text-align:center}
-.hero-ico{font-size:28px;margin-bottom:4px}
-.hero-title{color:#fff;font-size:18px;font-weight:500;line-height:1.3}
-.hero-sub{color:rgba(255,255,255,.65);font-size:12px;margin-top:4px}
+
+.outer{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;padding-bottom:8px}
+.inner{min-width:340px;max-width:860px;margin:0 auto;padding:16px 16px 32px}
+
+.hero{background:#1a5c2a;border-radius:12px;padding:20px 22px 16px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 28px,transparent 28px 56px);pointer-events:none}
+.hero-icon{font-size:28px;line-height:1;margin-bottom:7px;position:relative}
+.hero-title{color:#fff;font-size:18px;font-weight:500;line-height:1.3;position:relative}
+.hero-sub{color:rgba(255,255,255,.65);font-size:12px;margin-top:5px;position:relative}
+
+.scroll-hint{text-align:center;font-size:11px;color:#aaa;margin-bottom:8px;display:none}
+@media(max-width:520px){.scroll-hint{display:block}}
+
 .tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:10px 12px;border-radius:8px;border:1px solid #b0c4b1;background:#e8ede8;color:#555;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s,color .15s}
+.tab{flex:1;padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:#e8ede8;color:#555;font-size:13px;font-weight:500;cursor:pointer;transition:all .13s}
 .tab.on{background:#1a5c2a;color:#fff;border-color:#1a5c2a}
-.tab:hover:not(.on){background:#fff;color:#1a1a1a}
-.vbadge{display:inline-block;font-size:11px;font-weight:500;padding:2px 10px;border-radius:20px;margin-bottom:10px}
-.vbadge.wed{background:rgba(245,158,11,.15);color:#92400e;border:1px solid rgba(245,158,11,.35)}
-.vbadge.sat{background:rgba(109,40,217,.12);color:#5b21b6;border:1px solid rgba(109,40,217,.3)}
-.card{background:#fff;border:1px solid #dde4dd;border-radius:12px;padding:14px;margin-bottom:12px}
-.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.card-label{font-size:12px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.5px}
-.cbadge{font-size:11px;background:#e8f5e9;color:#1a5c2a;padding:2px 8px;border-radius:20px;font-weight:500}
-.scroll-hint{font-size:11px;color:#aaa;text-align:center;margin-bottom:8px;display:none}
-.col-heads{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 80px 30px;gap:5px;padding-bottom:5px;border-bottom:1px solid #eee;margin-bottom:2px}
-.ch{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.4px}
-.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 80px 30px;gap:5px;align-items:center;padding:5px 0;border-bottom:1px solid #f5f5f5}
-.row:last-child{border-bottom:none}
-.row input[type=text]{padding:6px 9px;font-size:13px;border-radius:7px;border:1px solid #ddd;background:#f9f9f9;color:#1a1a1a;width:100%;min-width:0}
-.row input[type=text]:focus{outline:none;border-color:#1a5c2a;background:#fff}
-.row select{padding:6px 5px;font-size:12px;border-radius:7px;border:1px solid #ddd;background:#f9f9f9;color:#1a1a1a;width:100%;cursor:pointer}
-.row select:focus{outline:none;border-color:#1a5c2a}
-.delbtn{width:27px;height:27px;border-radius:50%;border:1px solid #ddd;background:transparent;color:#999;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
-.delbtn:hover{background:#ffebee;color:#b71c1c;border-color:#ef9a9a}
-.acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;align-items:center}
-.btn-add{padding:8px 15px;border-radius:8px;border:1px solid #1a5c2a;background:transparent;color:#1a5c2a;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
+.tab:hover:not(.on){background:#fff;color:#111}
+
+.vbadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.vbadge.wed{background:#fef3c7;color:#b45309;border:1px solid rgba(180,83,9,.2)}
+.vbadge.sat{background:#ede9fe;color:#6d28d9;border:1px solid rgba(109,40,217,.2)}
+.vbadge-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.vbadge.wed .vbadge-dot{background:#b45309}
+.vbadge.sat .vbadge-dot{background:#6d28d9}
+
+.card{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px;padding:14px;margin-bottom:12px}
+
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-title{font-size:12px;font-weight:500;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.cnt-pill{font-size:11px;background:#e8f5e9;color:#1a5c2a;padding:2px 9px;border-radius:20px;font-weight:500}
+
+.col-hdr{display:grid;grid-template-columns:1fr 1fr 82px 30px;gap:6px;padding:0 0 5px;border-bottom:1px solid rgba(0,0,0,.08);margin-bottom:2px}
+.ch{font-size:10px;color:#aaa;font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+
+.nrow{display:grid;grid-template-columns:1fr 1fr 82px 30px;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.nrow:last-child{border-bottom:none}
+.nrow input,.nrow select{width:100%;padding:6px 9px;font-size:12px;border-radius:7px;border:1px solid #ddd;background:#f8f8f8;color:#111}
+.nrow input:focus,.nrow select:focus{outline:none;border-color:#1a5c2a;background:#fff}
+.dbtn{width:28px;height:28px;border-radius:50%;border:1px solid #ddd;background:transparent;color:#888;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0}
+.dbtn:hover{background:#ffebee;color:#c62828;border-color:#ef9a9a}
+
+.empty{text-align:center;padding:24px 12px;color:#bbb;font-size:13px}
+
+.act-row{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.btn-add{padding:7px 14px;border-radius:7px;border:1px solid #1a5c2a;background:transparent;color:#1a5c2a;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:5px}
 .btn-add:hover{background:#e8f5e9}
-.btn-clear{padding:8px 15px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#666;font-size:13px;cursor:pointer}
-.btn-clear:hover{background:#ffebee;color:#b71c1c;border-color:#ef9a9a}
-.btn-gen{margin-left:auto;padding:8px 18px;border-radius:8px;border:none;background:#1a5c2a;color:#fff;font-size:14px;font-weight:500;cursor:pointer}
+.btn-clear{padding:7px 14px;border-radius:7px;border:1px solid #ccc;background:transparent;color:#666;font-size:12px;cursor:pointer}
+.btn-clear:hover{background:#ffebee;color:#c62828;border-color:#ef9a9a}
+.btn-gen{margin-left:auto;padding:7px 18px;border-radius:7px;border:none;background:#1a5c2a;color:#fff;font-size:13px;font-weight:500;cursor:pointer}
 .btn-gen:hover{background:#144a21}
-.btn-gen:disabled{background:#ccc;color:#888;cursor:default}
-.info{font-size:11px;color:#aaa;margin-top:8px;line-height:1.5}
-.empty{text-align:center;padding:28px 12px;color:#bbb;font-size:14px}
-.ghead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.gtitle{font-size:15px;font-weight:500;color:#1a1a1a}
-.btn-sha{padding:6px 13px;border-radius:8px;border:1px solid #25D366;background:transparent;color:#128C7E;font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
-.btn-sha:hover{background:#e8f5e9}
-.gcard{background:#f7f9f7;border:1px solid #e0e8e0;border-radius:8px;padding:11px 13px;margin-bottom:8px}
-.gcard.gfirst{border-left:3px solid #f59e0b;border-radius:0 8px 8px 0}
-.gcard.glast{border-left:3px solid #7c3aed;border-radius:0 8px 8px 0}
-.gcard.greg{border-left:3px solid #1a5c2a;border-radius:0 8px 8px 0}
-.gcardhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
-.glabel{font-size:13px;font-weight:500;color:#555}
-.gsz{font-size:11px;padding:2px 7px;border-radius:20px;font-weight:500}
+.btn-gen:disabled{background:#ccc;color:#999;cursor:default}
+.info-note{font-size:11px;color:#bbb;margin-top:8px;line-height:1.5}
+
+.grp-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.grp-title{font-size:14px;font-weight:500;color:#111}
+.grp-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.btn-reshuffle{padding:6px 12px;border-radius:7px;border:1px solid #ccc;background:transparent;color:#555;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-reshuffle:hover{background:#f0f0f0}
+.btn-wa-all{padding:6px 12px;border-radius:7px;border:1px solid #25D366;background:transparent;color:#128C7E;font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.btn-wa-all:hover{background:#e8f5e9}
+
+.gcard{background:#f7f9f7;border:1px solid rgba(0,0,0,.09);border-radius:9px;padding:11px 13px;margin-bottom:8px}
+.gcard.gfirst{border-left:3px solid #f59e0b;border-radius:0 9px 9px 0}
+.gcard.glast{border-left:3px solid #7c3aed;border-radius:0 9px 9px 0}
+.gcard.greg{border-left:3px solid #1a5c2a;border-radius:0 9px 9px 0}
+.gcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.glabel{font-size:12px;font-weight:500;color:#555}
+.gszbadge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
 .gsz3{background:#e8f5e9;color:#1a5c2a}
-.gsz4{background:#e3f2fd;color:#0d47a1}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px}
-.chip{background:#fff;border:1px solid #ddd;border-radius:20px;padding:3px 11px;font-size:13px;color:#1a1a1a}
-.btn-wa{padding:5px 11px;border-radius:7px;border:1px solid #25D366;background:transparent;color:#128C7E;font-size:12px;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:4px;text-decoration:none}
+.gsz4{background:#e3f2fd;color:#1565c0}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.chip{background:#fff;border:1px solid #ddd;border-radius:20px;padding:3px 10px;font-size:12px;color:#111}
+.btn-wa{padding:4px 10px;border-radius:7px;border:1px solid #25D366;background:transparent;color:#128C7E;font-size:11px;cursor:pointer;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 .btn-wa:hover{background:#e8f5e9}
+
 @media(max-width:480px){
-  .inner{padding:10px 10px 20px}
-  .col-heads{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 70px 28px}
-  .row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 70px 28px}
-  .scroll-hint{display:block}
+  .col-hdr,.nrow{grid-template-columns:1fr 1fr 70px 26px}
+  .hero-title{font-size:15px}
 }
 </style>
 </head>
 <body>
 
-<div class="app">
+<div class="outer">
 <div class="inner">
 
 <div class="hero">
-  <div class="hero-ico">⛳</div>
+  <div class="hero-icon">&#9971;</div>
   <div class="hero-title">West Essex Wednesday and Saturday 9:00am Rollup</div>
   <div class="hero-sub">Group generator &amp; manager</div>
 </div>
 
-<div class="scroll-hint">Swipe left or right if the table is cut off</div>
+<p class="scroll-hint">&#8592; swipe left/right to see all columns &#8594;</p>
 
 <div class="tabs">
-  <button class="tab on" id="tab-wed" onclick="switchVar('wed')">Wednesday Roll Up</button>
-  <button class="tab" id="tab-sat" onclick="switchVar('sat')">Saturday Roll Up</button>
+  <button class="tab on" id="tab-wed" onclick="switchTab('wed')">Wednesday Roll Up</button>
+  <button class="tab" id="tab-sat" onclick="switchTab('sat')">Saturday Roll Up</button>
 </div>
 
-<div id="vbadge-wrap"><span class="vbadge wed" id="vbadge">Wednesday Roll Up</span></div>
+<div style="margin-bottom:10px">
+  <span class="vbadge wed" id="vbadge">
+    <span class="vbadge-dot"></span>
+    <span id="vbadge-text">Wednesday Roll Up</span>
+  </span>
+</div>
 
 <div class="card">
-  <div class="card-head">
-    <span class="card-label">Players</span>
-    <span class="cbadge" id="cnt">0 / 20</span>
+  <div class="sec-hdr">
+    <span class="sec-title">Players</span>
+    <span class="cnt-pill" id="cnt">0 / 20</span>
   </div>
-  <div class="col-heads">
+  <div class="col-hdr">
     <span class="ch">Name</span>
     <span class="ch">Designated partner</span>
     <span class="ch">Group pref</span>
     <span class="ch"></span>
   </div>
-  <div id="plist"></div>
-  <div class="acts">
-    <button class="btn-add" onclick="addRow()"><span style="font-size:15px">+</span> Add player</button>
+  <div id="names-list"></div>
+  <div class="act-row">
+    <button class="btn-add" onclick="addRow()"><span style="font-size:16px;line-height:1">+</span> Add player</button>
     <button class="btn-clear" onclick="clearAll()">Clear all</button>
-    <button class="btn-gen" id="genbtn" onclick="generate()" disabled>⛳ Generate groups</button>
+    <button class="btn-gen" id="gen-btn" onclick="generate()" disabled>&#9971; Generate groups</button>
   </div>
-  <div class="info">Groups of 3 displayed before groups of 4. Partners always in the same group. First/Last preferences honoured.</div>
+  <div class="info-note">Groups of 4 preferred wherever possible. Groups of 3 listed first. Partners always kept together. First/Last group preferences honoured.</div>
 </div>
 
-<div id="gout"></div>
+<div id="groups-out"></div>
 
 </div>
 </div>
 
 <script>
-const S={wed:[],sat:[],cur:'wed'};
-const cur=()=>S[S.cur];
+var WA_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+var RESHUFFLE_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>';
 
-function addRow(n,p,g){
-  n=n||'';p=p||'';g=g||'';
-  if(cur().length>=20)return;
-  cur().push({n,p,g});
-  render();
+var LS_KEY = 'werollup_v2';
+var app = { wed:{players:[],groups:[]}, sat:{players:[],groups:[]}, cur:'wed' };
+
+function loadState() {
+  try { var s = localStorage.getItem(LS_KEY); if(s) app = JSON.parse(s); } catch(e){}
+}
+function saveState() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(app)); } catch(e){}
+}
+function curData() { return app[app.cur]; }
+
+function switchTab(v) {
+  app.cur = v;
+  saveState();
+  document.getElementById('tab-wed').classList.toggle('on', v==='wed');
+  document.getElementById('tab-sat').classList.toggle('on', v==='sat');
+  var b = document.getElementById('vbadge');
+  var bt = document.getElementById('vbadge-text');
+  b.className = 'vbadge ' + (v==='wed' ? 'wed' : 'sat');
+  bt.textContent = v==='wed' ? 'Wednesday Roll Up' : 'Saturday Roll Up';
+  renderPlayers();
+  renderGroups(curData().groups);
 }
 
-function delRow(i){cur().splice(i,1);render();}
-function upd(i,f,v){cur()[i][f]=v;}
-
-function clearAll(){
-  if(!confirm('Clear all players for this variation?'))return;
-  S[S.cur]=[];
-  document.getElementById('gout').innerHTML='';
-  render();
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 }
 
-function switchVar(v){
-  S.cur=v;
-  document.getElementById('tab-wed').classList.toggle('on',v==='wed');
-  document.getElementById('tab-sat').classList.toggle('on',v==='sat');
-  const b=document.getElementById('vbadge');
-  b.textContent=v==='wed'?'Wednesday Roll Up':'Saturday Roll Up';
-  b.className='vbadge '+(v==='wed'?'wed':'sat');
-  document.getElementById('gout').innerHTML='';
-  render();
+function addRow(name,partner,group) {
+  if(curData().players.length >= 20) return;
+  curData().players.push({name:name||'',partner:partner||'',group:group||''});
+  saveState(); renderPlayers();
+}
+function delRow(i) { curData().players.splice(i,1); saveState(); renderPlayers(); }
+function upd(i,f,v) { curData().players[i][f]=v; saveState(); }
+function clearAll() {
+  if(!confirm('Clear all players for this variation?')) return;
+  curData().players=[]; curData().groups=[];
+  saveState(); renderPlayers();
+  document.getElementById('groups-out').innerHTML='';
 }
 
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
-
-function render(){
-  const list=cur();
-  document.getElementById('cnt').textContent=list.length+' / 20';
-  document.getElementById('genbtn').disabled=list.length<2;
-  const el=document.getElementById('plist');
-  if(!list.length){el.innerHTML='<div class="empty">No players yet — tap Add player to begin</div>';return;}
-  el.innerHTML=list.map((r,i)=>`
-    <div class="row">
-      <input type="text" placeholder="Player name" value="${esc(r.n)}" oninput="upd(${i},'n',this.value)">
-      <input type="text" placeholder="Optional" value="${esc(r.p)}" oninput="upd(${i},'p',this.value)">
-      <select onchange="upd(${i},'g',this.value)">
-        <option value="" ${!r.g?'selected':''}>—</option>
-        <option value="First" ${r.g==='First'?'selected':''}>First</option>
-        <option value="Last" ${r.g==='Last'?'selected':''}>Last</option>
-      </select>
-      <button class="delbtn" onclick="delRow(${i})">×</button>
-    </div>`).join('');
+function renderPlayers() {
+  var ps = curData().players;
+  document.getElementById('cnt').textContent = ps.length + ' / 20';
+  document.getElementById('gen-btn').disabled = ps.length < 2;
+  var el = document.getElementById('names-list');
+  if(!ps.length) { el.innerHTML='<div class="empty">No players yet &#8212; tap Add player</div>'; return; }
+  el.innerHTML = ps.map(function(p,i){
+    return '<div class="nrow">' +
+      '<input type="text" placeholder="Player name" value="'+esc(p.name)+'" oninput="upd('+i+',\'name\',this.value)">' +
+      '<input type="text" placeholder="Partner (optional)" value="'+esc(p.partner)+'" oninput="upd('+i+',\'partner\',this.value)">' +
+      '<select onchange="upd('+i+',\'group\',this.value)">' +
+        '<option value=""'+(!p.group?' selected':'')+'>&#8212;</option>' +
+        '<option value="First"'+(p.group==='First'?' selected':'')+'>First</option>' +
+        '<option value="Last"'+(p.group==='Last'?' selected':'')+'>Last</option>' +
+      '</select>' +
+      '<button class="dbtn" onclick="delRow('+i+')" title="Remove">&#215;</button>' +
+    '</div>';
+  }).join('');
 }
 
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+function shuffle(a) {
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
   return a;
 }
 
-function generate(){
-  const players=cur().map(r=>({...r})).filter(r=>r.n.trim());
-  if(players.length<2){alert('Add at least 2 players first.');return;}
-  const n=players.length;
-  const numG=Math.ceil(n/3.5);
-  const num3=numG*4-n;
-  const num4=numG-num3;
-  const tempSizes=Array(num3).fill(3).concat(Array(num4).fill(4));
+function calcSizes(n) {
+  if(n<3) return [n];
+  var fours=Math.floor(n/4), rem=n-fours*4;
+  if(rem===1&&fours>0){fours--;rem=5;}
+  if(rem===2&&fours>0){fours--;rem=6;}
+  var threes = rem===0?0:rem===3?1:rem===5?2:rem===6?2:Math.ceil(rem/3);
+  var sizes=[];
+  for(var i=0;i<threes;i++) sizes.push(3);
+  for(var i=0;i<fours;i++) sizes.push(4);
+  return sizes;
+}
 
-  const firstP=players.filter(p=>p.g==='First');
-  const lastP=players.filter(p=>p.g==='Last');
-  const others=shuffle(players.filter(p=>p.g!=='First'&&p.g!=='Last'));
+function generate() {
+  var ps = curData().players.filter(function(p){return p.name.trim();});
+  if(ps.length<2){alert('Add at least 2 players first.');return;}
+  var sizes = calcSizes(ps.length);
+  var groups = sizes.map(function(sz){return {names:[],sz:sz};});
+  var placed = {};
+  var firstIdx=0, lastIdx=groups.length-1;
 
-  const placed=new Set();
-  const rawGroups=[];
-  for(let i=0;i<numG;i++) rawGroups.push([]);
-
-  const firstIdx=0;
-  const lastIdx=numG-1;
-
-  function place(player,gIdx){
-    if(placed.has(player.n))return;
-    rawGroups[gIdx].push(player.n);
-    placed.add(player.n);
-    if(player.p&&player.p.trim()){
-      const partner=players.find(x=>x.n.toLowerCase()===player.p.trim().toLowerCase());
-      if(partner&&!placed.has(partner.n)){
-        rawGroups[gIdx].push(partner.n);
-        placed.add(partner.n);
+  function place(player,gi){
+    if(placed[player.name]) return;
+    groups[gi].names.push(player.name); placed[player.name]=true;
+    if(player.partner&&player.partner.trim()){
+      var pm=null;
+      for(var k=0;k<ps.length;k++){
+        if(ps[k].name.trim().toLowerCase()===player.partner.trim().toLowerCase()){pm=ps[k];break;}
       }
+      if(pm&&!placed[pm.name]){groups[gi].names.push(pm.name);placed[pm.name]=true;}
     }
   }
 
-  firstP.forEach(p=>place(p,firstIdx));
-  lastP.forEach(p=>place(p,lastIdx));
+  var firstPs=ps.filter(function(p){return p.group==='First';});
+  var lastPs=ps.filter(function(p){return p.group==='Last';});
+  var others=shuffle(ps.filter(function(p){return p.group!=='First'&&p.group!=='Last';}));
 
-  let gi=0;
-  for(const p of others){
-    if(placed.has(p.n))continue;
-    while(gi<numG&&rawGroups[gi].length>=(tempSizes[gi]||4)) gi++;
-    if(gi>=numG) gi=numG-1;
+  firstPs.forEach(function(p){place(p,firstIdx);});
+  lastPs.forEach(function(p){place(p,lastIdx);});
+
+  var gi=0;
+  others.forEach(function(p){
+    if(placed[p.name]) return;
+    while(gi<groups.length&&groups[gi].names.length>=groups[gi].sz) gi++;
+    if(gi>=groups.length) gi=groups.length-1;
     place(p,gi);
-  }
-  players.forEach(p=>{
-    if(!placed.has(p.n)){
-      let min=0;
-      for(let i=1;i<numG;i++) if(rawGroups[i].length<rawGroups[min].length) min=i;
-      rawGroups[min].push(p.n);
-      placed.add(p.n);
+    if(groups[gi].names.length>=groups[gi].sz) gi++;
+  });
+  ps.forEach(function(p){
+    if(!placed[p.name]){
+      var m=0; for(var i=1;i<groups.length;i++){if(groups[i].names.length<groups[m].names.length)m=i;}
+      groups[m].names.push(p.name); placed[p.name]=true;
     }
   });
 
-  let finalGroups;
-  if(numG===1){
-    finalGroups=rawGroups;
-  } else {
-    const firstGroup=rawGroups[0];
-    const lastGroup=rawGroups[numG-1];
-    const middle=rawGroups.slice(1,numG-1);
-    const mid3=middle.filter(g=>g.length<=3);
-    const mid4=middle.filter(g=>g.length>=4);
-    finalGroups=[firstGroup,...mid3,...mid4,lastGroup];
-  }
-
-  showGroups(finalGroups);
+  groups.sort(function(a,b){return a.names.length-b.names.length;});
+  var flat=groups.map(function(g){return g.names;});
+  curData().groups=flat; saveState();
+  renderGroups(flat);
 }
 
-const waIcon=`<svg width="13" height="13" viewBox="0 0 24 24" fill="#128C7E"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+function renderGroups(groups) {
+  var el=document.getElementById('groups-out');
+  if(!groups||!groups.length){el.innerHTML='';return;}
+  var variation=app.cur==='wed'?'Wednesday Roll Up':'Saturday Roll Up';
+  var lastIdx=groups.length-1;
+  var allLines=groups.map(function(g,i){return 'Group '+(i+1)+': '+g.join(', ');}).join('\n');
+  var allText=encodeURIComponent(variation+'\n'+allLines);
 
-function showGroups(groups){
-  const variation=S.cur==='wed'?'Wednesday Roll Up':'Saturday Roll Up';
-  const last=groups.length-1;
-  const allLines=groups.map((g,i)=>`Group ${i+1}: ${g.join(', ')}`).join('\n');
-  const allUrl='https://wa.me/?text='+encodeURIComponent(variation+'\n'+allLines);
+  var html='<div class="card">' +
+    '<div class="grp-hdr">' +
+      '<span class="grp-title">'+variation+' &#8212; Groups</span>' +
+      '<div class="grp-actions">' +
+        '<button class="btn-reshuffle" onclick="generate()">'+RESHUFFLE_SVG+' Reshuffle</button>' +
+        '<a class="btn-wa-all" href="https://wa.me/?text='+allText+'" target="_blank">'+WA_SVG+' Share all</a>' +
+      '</div>' +
+    '</div>';
 
-  let html=`<div class="card">
-    <div class="ghead">
-      <span class="gtitle">${variation} — Groups</span>
-      <a class="btn-sha" href="${allUrl}" target="_blank">${waIcon} Share all</a>
-    </div>`;
-
-  groups.forEach((g,i)=>{
-    let cls='greg',lbl=`Group ${i+1}`;
-    if(i===0&&groups.length>1){cls='gfirst';lbl='Group 1 — First tee';}
-    if(i===last&&groups.length>1){cls='glast';lbl=`Group ${i+1} — Last tee`;}
-    const szCls=g.length<=3?'gsz3':'gsz4';
-    const chips=g.map(n=>`<span class="chip">${esc(n)}</span>`).join('');
-    const wUrl='https://wa.me/?text='+encodeURIComponent(`${variation} - Group ${i+1}: ${g.join(', ')}`);
-    html+=`<div class="gcard ${cls}">
-      <div class="gcardhead">
-        <span class="glabel">${lbl}</span>
-        <span class="gsz ${szCls}">${g.length} players</span>
-      </div>
-      <div class="chips">${chips}</div>
-      <a class="btn-wa" href="${wUrl}" target="_blank">${waIcon} Share on WhatsApp</a>
-    </div>`;
+  groups.forEach(function(g,i){
+    var cls='greg', lbl='Group '+(i+1);
+    if(i===0&&groups.length>1){cls='gfirst';lbl='Group 1 &#8212; First tee';}
+    if(i===lastIdx&&groups.length>1){cls='glast';lbl='Group '+(i+1)+' &#8212; Last tee';}
+    var szCls=g.length===3?'gsz3':'gsz4';
+    var chips=g.map(function(n){return '<span class="chip">'+esc(n)+'</span>';}).join('');
+    var waUrl='https://wa.me/?text='+encodeURIComponent(variation+' \u2013 Group '+(i+1)+': '+g.join(', '));
+    html+='<div class="gcard '+cls+'">' +
+      '<div class="gcard-top">' +
+        '<span class="glabel">'+lbl+'</span>' +
+        '<span class="gszbadge '+szCls+'">'+g.length+' players</span>' +
+      '</div>' +
+      '<div class="chips">'+chips+'</div>' +
+      '<a class="btn-wa" href="'+waUrl+'" target="_blank">'+WA_SVG+' Share on WhatsApp</a>' +
+    '</div>';
   });
   html+='</div>';
-  document.getElementById('gout').innerHTML=html;
+  el.innerHTML=html;
 }
 
-render();
+loadState();
+switchTab(app.cur);
 </script>
 </body>
 </html>

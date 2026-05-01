@@ -81,8 +81,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .gcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .glabel{font-size:12px;font-weight:500;color:#555}
 .gszbadge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.gsz2{background:#fff3e0;color:#e65100}
 .gsz3{background:#e8f5e9;color:#1a5c2a}
 .gsz4{background:#e3f2fd;color:#1565c0}
+
+.medal-row{display:none;align-items:center;gap:8px;margin-bottom:12px;padding:9px 12px;background:#fff8e1;border:1px solid rgba(180,83,9,.2);border-radius:8px}
+.medal-row.visible{display:flex}
+.medal-row input[type=checkbox]{width:16px;height:16px;accent-color:#b45309;cursor:pointer;flex-shrink:0}
+.medal-row label{font-size:13px;font-weight:500;color:#b45309;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.medal-trophy{font-size:15px;line-height:1}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
 .chip{background:#fff;border:1px solid #ddd;border-radius:20px;padding:3px 10px;font-size:12px;color:#111}
 .btn-wa{padding:4px 10px;border-radius:7px;border:1px solid #25D366;background:transparent;color:#128C7E;font-size:11px;cursor:pointer;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
@@ -112,6 +119,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <button class="tab" id="tab-sat" onclick="switchTab('sat')">Saturday Roll Up</button>
 </div>
 
+<div class="medal-row" id="medal-row">
+  <input type="checkbox" id="medal-chk" onchange="toggleMedal(this.checked)">
+  <label for="medal-chk"><span class="medal-trophy">🏆</span> Medal competition — groups of 2 or 3</label>
+</div>
+
 <div style="margin-bottom:10px">
   <span class="vbadge wed" id="vbadge">
     <span class="vbadge-dot"></span>
@@ -136,7 +148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <button class="btn-clear" onclick="clearAll()">Clear all</button>
     <button class="btn-gen" id="gen-btn" onclick="generate()" disabled>&#9971; Generate groups</button>
   </div>
-  <div class="info-note">Groups of 4 preferred wherever possible. Groups of 3 listed first. Partners always kept together. First/Last group preferences honoured.</div>
+  <div class="info-note" id="info-note">Groups of 4 preferred wherever possible. Groups of 3 listed first. Partners always kept together. First/Last group preferences honoured.</div>
 </div>
 
 <div id="groups-out"></div>
@@ -149,10 +161,19 @@ var WA_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor
 var RESHUFFLE_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>';
 
 var LS_KEY = 'werollup_v2';
-var app = { wed:{players:[],groups:[]}, sat:{players:[],groups:[]}, cur:'wed' };
+var app = { wed:{players:[],groups:[],medal:false}, sat:{players:[],groups:[],medal:false}, cur:'wed' };
 
 function loadState() {
-  try { var s = localStorage.getItem(LS_KEY); if(s) app = JSON.parse(s); } catch(e){}
+  try {
+    var s = localStorage.getItem(LS_KEY);
+    if(s) {
+      var loaded = JSON.parse(s);
+      app = loaded;
+      // Ensure medal field exists for both tabs (backwards compat)
+      if(app.wed.medal===undefined) app.wed.medal=false;
+      if(app.sat.medal===undefined) app.sat.medal=false;
+    }
+  } catch(e){}
 }
 function saveState() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(app)); } catch(e){}
@@ -168,12 +189,33 @@ function switchTab(v) {
   var bt = document.getElementById('vbadge-text');
   b.className = 'vbadge ' + (v==='wed' ? 'wed' : 'sat');
   bt.textContent = v==='wed' ? 'Wednesday Roll Up' : 'Saturday Roll Up';
+  // Medal checkbox: only visible for Saturday
+  var medalRow = document.getElementById('medal-row');
+  if(v==='sat'){medalRow.classList.add('visible');}else{medalRow.classList.remove('visible');}
+  document.getElementById('medal-chk').checked = !!curData().medal;
+  updateInfoNote();
   renderPlayers();
   renderGroups(curData().groups);
 }
 
 function esc(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+function toggleMedal(checked) {
+  curData().medal = checked;
+  saveState();
+  updateInfoNote();
+  // Clear existing groups when mode changes
+  curData().groups = [];
+  document.getElementById('groups-out').innerHTML = '';
+}
+
+function updateInfoNote() {
+  var medal = !!curData().medal;
+  document.getElementById('info-note').textContent = medal
+    ? 'Medal mode: groups of 3 preferred, groups of 2 where needed. Groups of 2 listed first. Partners always kept together. First/Last preferences honoured.'
+    : 'Groups of 4 preferred wherever possible. Groups of 3 listed first. Partners always kept together. First/Last group preferences honoured.';
 }
 
 function addRow(name,partner,group) {
@@ -215,22 +257,37 @@ function shuffle(a) {
   return a;
 }
 
-function calcSizes(n) {
+function calcSizes(n, medal) {
+  if(medal) {
+    // Maximise groups of 3; remainder gives groups of 2
+    if(n < 2) return [n];
+    var threes = Math.floor(n/3);
+    var rem = n - threes*3;
+    if(rem===1 && threes>0){threes--;rem=4;} // 4 = 2+2
+    // rem is now 0 or 2 or 4
+    var twos = rem===0?0:rem===2?1:2;
+    var sizes=[];
+    for(var i=0;i<twos;i++) sizes.push(2);
+    for(var i=0;i<threes;i++) sizes.push(3);
+    return sizes;
+  }
+  // Standard mode: maximise groups of 4
   if(n<3) return [n];
-  var fours=Math.floor(n/4), rem=n-fours*4;
-  if(rem===1&&fours>0){fours--;rem=5;}
-  if(rem===2&&fours>0){fours--;rem=6;}
-  var threes = rem===0?0:rem===3?1:rem===5?2:rem===6?2:Math.ceil(rem/3);
-  var sizes=[];
-  for(var i=0;i<threes;i++) sizes.push(3);
-  for(var i=0;i<fours;i++) sizes.push(4);
-  return sizes;
+  var fours=Math.floor(n/4), rem2=n-fours*4;
+  if(rem2===1&&fours>0){fours--;rem2=5;}
+  if(rem2===2&&fours>0){fours--;rem2=6;}
+  var threes2 = rem2===0?0:rem2===3?1:rem2===5?2:rem2===6?2:Math.ceil(rem2/3);
+  var sizes2=[];
+  for(var i=0;i<threes2;i++) sizes2.push(3);
+  for(var i=0;i<fours;i++) sizes2.push(4);
+  return sizes2;
 }
 
 function generate() {
   var ps = curData().players.filter(function(p){return p.name.trim();});
   if(ps.length<2){alert('Add at least 2 players first.');return;}
-  var sizes = calcSizes(ps.length);
+  var medal = !!curData().medal;
+  var sizes = calcSizes(ps.length, medal);
   var groups = sizes.map(function(sz){return {names:[],sz:sz};});
   var placed = {};
   var firstIdx=0, lastIdx=groups.length-1;
@@ -278,7 +335,9 @@ function generate() {
 function renderGroups(groups) {
   var el=document.getElementById('groups-out');
   if(!groups||!groups.length){el.innerHTML='';return;}
+  var medal = !!curData().medal;
   var variation=app.cur==='wed'?'Wednesday Roll Up':'Saturday Roll Up';
+  if(medal) variation += ' \u2013 Medal';
   var lastIdx=groups.length-1;
   var allLines=groups.map(function(g,i){return 'Group '+(i+1)+': '+g.join(', ');}).join('\n');
   var allText=encodeURIComponent(variation+'\n'+allLines);
@@ -296,7 +355,7 @@ function renderGroups(groups) {
     var cls='greg', lbl='Group '+(i+1);
     if(i===0&&groups.length>1){cls='gfirst';lbl='Group 1 &#8212; First tee';}
     if(i===lastIdx&&groups.length>1){cls='glast';lbl='Group '+(i+1)+' &#8212; Last tee';}
-    var szCls=g.length===3?'gsz3':'gsz4';
+    var szCls=g.length===2?'gsz2':g.length===3?'gsz3':'gsz4';
     var chips=g.map(function(n){return '<span class="chip">'+esc(n)+'</span>';}).join('');
     var waUrl='https://wa.me/?text='+encodeURIComponent(variation+' \u2013 Group '+(i+1)+': '+g.join(', '));
     html+='<div class="gcard '+cls+'">' +
